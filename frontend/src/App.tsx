@@ -6,17 +6,20 @@ import Admin from "./pages/admin/index.tsx";
 import Patients from "./pages/patients/index.tsx";
 import Doctors from "./pages/doctors/index.tsx";
 import Consultations from "./pages/consultations/index.tsx";
+import Layout from "./components/Layout.tsx";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/register" element={<Register />} />      
       <Route path="/dash" element={<Dashboard />} />
+      <Route element={<Layout />}>
       <Route path="/admin" element={<Admin />} />
       <Route path="/patients" element={<Patients />} />
       <Route path="/doctors" element={<Doctors />} />
       <Route path="/consultations" element={<Consultations />} />
+      </Route>
     </Routes>
   )
 }
