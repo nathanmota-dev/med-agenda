@@ -74,6 +74,8 @@ public class ConsultationService {
         return consultationRepository.findAll();
     }
 
-
+    public List<Consultation> getPatientConsultationHistory(String patientCpf) {
+        return consultationRepository.findByPatient_Cpf(patientCpf);
+    }
 
 }

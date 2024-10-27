@@ -1,7 +1,9 @@
 package com.ufu.gestaoConsultasMedicas.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "patienty")
@@ -22,6 +24,10 @@ public class Patient {
 
     @Column(name = "medical_history")
     private String medicalHistory;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Consultation> historicoConsultas;
 
     public Patient() {
     }
@@ -72,5 +78,13 @@ public class Patient {
 
     public void setMedicalHistory(String medicalHistory) {
         this.medicalHistory = medicalHistory;
+    }
+
+    public List<Consultation> getHistoricoConsultas() {
+        return historicoConsultas;
+    }
+
+    public void setHistoricoConsultas(List<Consultation> historicoConsultas) {
+        this.historicoConsultas = historicoConsultas;
     }
 }

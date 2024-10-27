@@ -1,5 +1,6 @@
 package com.ufu.gestaoConsultasMedicas.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -18,6 +19,7 @@ public class Consultation {
 
     @ManyToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "cpf", nullable = false)
+    @JsonBackReference
     private Patient patient;
 
     @ManyToOne

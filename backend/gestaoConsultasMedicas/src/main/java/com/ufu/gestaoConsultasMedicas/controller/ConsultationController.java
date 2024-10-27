@@ -70,4 +70,11 @@ public class ConsultationController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/patient-history/{cpf}")
+    public ResponseEntity<List<Consultation>> getPatientConsultationHistory(@PathVariable String cpf) {
+        List<Consultation> consultations = consultationService.getPatientConsultationHistory(cpf);
+        return ResponseEntity.ok(consultations);
+    }
+
 }
