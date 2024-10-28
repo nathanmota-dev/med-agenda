@@ -16,8 +16,8 @@ export default function Dashboard() {
         { name: 'Pacientes', icon: Users, url: '/patients' },
         { name: 'Médicos', icon: Stethoscope, url: '/doctors' },
         { name: 'Consultas', icon: ClipboardList, url: '/consultations' },
-        { name: 'Exportar dados', icon: FileOutput, url: '#' },  
-        { name: 'Configurações', icon: Settings, url: '#' },  
+        { name: 'Exportar dados', icon: FileOutput, url: '#' },
+        { name: 'Configurações', icon: Settings, url: '#' },
         { name: 'Logout', icon: LogOut, url: '/login' }
     ]
 
@@ -50,8 +50,13 @@ export default function Dashboard() {
         <div className="flex h-screen bg-gray-100">
             {/* Sidebar */}
             <aside className="w-64 bg-white shadow-md">
-                <div className="p-4">
-                    <h1 className="text-2xl font-bold text-blue-600">Med Agenda</h1>
+                <div className='flex justify-center items-center'>
+                    <div className="p-4">
+                        <div className='w-32 h-32'>
+                            <img src="/logo.png" alt="logo" />
+                        </div>
+                        <h1 className="text-2xl font-bold text-blue-600">Med Agenda</h1>
+                    </div>
                 </div>
                 <nav className="mt-6">
                     {sidebarItems.map((item) => (
@@ -78,7 +83,7 @@ export default function Dashboard() {
                 {/* Header */}
                 <header className="bg-blue-600 shadow-md">
                     <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                        <h2 className="text-2xl font-bold text-white">Dashboard</h2>
+                        <h2 className="text-2xl font-bold text-white">Med Agenda</h2>
                         <div className="flex items-center">
                             <span className="text-white mr-4">Usuário</span>
                             <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-blue-600 font-bold">

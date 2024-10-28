@@ -18,8 +18,13 @@ export default function Sidebar() {
 
     return (
         <aside className="w-64 bg-white shadow-md">
-            <div className="p-4">
-                <h1 className="text-2xl font-bold text-blue-600">Med Agenda</h1>
+            <div className='flex justify-center items-center'>
+                <div className="p-4">
+                    <div className='w-32 h-32'>
+                        <img src="/logo.png" alt="logo" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-blue-600">Med Agenda</h1>
+                </div>
             </div>
             <nav className="mt-6">
                 {sidebarItems.map((item) => (

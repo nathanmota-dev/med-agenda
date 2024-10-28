@@ -31,6 +31,9 @@ export default function Register() {
         <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div>
+                    <div className='flex justify-center items-center'>
+                        <img className='w-32 h-32' src="/logo.png" alt="Logo" />
+                    </div>
                     <h1 className="text-center text-3xl font-extrabold text-blue-600">MedAgenda</h1>
                     <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">Registrar</h2>
                 </div>
