@@ -1,5 +1,5 @@
 <div align="center">
-    ![Logo](frontend/public/logo2.png)
+    <img src="https://github.com/nathanmota-dev/final-project-poo2/blob/main/frontend/public/logo2.png" alt="Logo" />
 </div>
 
 # Med Agenda
