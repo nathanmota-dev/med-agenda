@@ -13,6 +13,12 @@ public class Patient {
     @Column(name = "cpf", length = 11, nullable = false, unique = true)
     private String cpf;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -32,8 +38,10 @@ public class Patient {
     public Patient() {
     }
 
-    public Patient(String cpf, String name, LocalDate dateOfBirth, String address, String medicalHistory) {
+    public Patient(String cpf, String email, String password, String name, LocalDate dateOfBirth, String address, String medicalHistory) {
         this.cpf = cpf;
+        this.email = email;
+        this.password = password;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.address = address;
@@ -46,6 +54,22 @@ public class Patient {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {
