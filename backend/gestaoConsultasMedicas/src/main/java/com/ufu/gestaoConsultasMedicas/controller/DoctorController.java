@@ -23,6 +23,15 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody Doctor loginRequest) {
+        Optional<Doctor> doctor = doctorService.authenticateDoctor(loginRequest.getEmail(), loginRequest.getPassword());
+        if (doctor.isPresent()) {
+            return ResponseEntity.ok("Login successful!");
+        }
+        return ResponseEntity.status(401).body("Invalid email or password.");
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Doctor> addDoctor(@RequestBody Doctor doctor) {
         Doctor newDoctor = doctorService.addDoctor(doctor);
