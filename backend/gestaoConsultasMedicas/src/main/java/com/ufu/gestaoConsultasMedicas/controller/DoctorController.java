@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,5 +80,11 @@ public class DoctorController {
         } else {
             return ResponseEntity.badRequest().body(null);  // Retorna 400 se nenhum parâmetro for passado
         }
+    }
+
+    @GetMapping("/consultations/{crm}")
+    public ResponseEntity<List<LocalDate>> getConsultationDatesByDoctorCrm(@PathVariable String crm) {
+        List<LocalDate> dates = doctorService.getConsultationDatesByCrm(crm);
+        return ResponseEntity.ok(dates);
     }
 }
