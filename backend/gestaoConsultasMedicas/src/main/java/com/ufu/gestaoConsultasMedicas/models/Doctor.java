@@ -13,6 +13,12 @@ public class Doctor {
     @Column(name = "crm", length = 9, nullable = false, unique = true)
     private String crm;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
     @Column(name = "name", nullable = false)
     private String name;
 
@@ -25,8 +31,10 @@ public class Doctor {
     public Doctor(){
     }
 
-    public Doctor(String crm, String name, String specialty, String telephone) {
+    public Doctor(String crm, String email, String password, String name, String specialty, String telephone) {
         this.crm = crm;
+        this.email = email;
+        this.password = password;
         this.name = name;
         this.specialty = specialty;
         this.telephone = telephone;
@@ -38,6 +46,22 @@ public class Doctor {
 
     public void setCrm(String crm) {
         this.crm = crm;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {

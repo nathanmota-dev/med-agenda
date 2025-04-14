@@ -21,6 +21,15 @@ public class PatientController {
         this.patientService = patientService;
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody Patient loginRequest) {
+        Optional<Patient> patient = patientService.authenticatePatient(loginRequest.getEmail(), loginRequest.getPassword());
+        if (patient.isPresent()) {
+            return ResponseEntity.ok("Login successful!");
+        }
+        return ResponseEntity.status(401).body("Invalid email or password.");
+    }
+
     @PostMapping("/create")
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
         Patient newPatient = patientService.createPatient(
@@ -28,7 +37,9 @@ public class PatientController {
                 patient.getName(),
                 patient.getDateOfBirth(),
                 patient.getAddress(),
-                patient.getMedicalHistory()
+                patient.getMedicalHistory(),
+                patient.getEmail(),
+                patient.getPassword()
         );
         return ResponseEntity.ok(newPatient);
     }

@@ -5,6 +5,8 @@ import com.ufu.gestaoConsultasMedicas.factory.PatientFactory;
 import com.ufu.gestaoConsultasMedicas.repository.PatientRepository;
 import com.ufu.gestaoConsultasMedicas.validation.PatientValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,15 +17,27 @@ import java.util.Optional;
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+
 
     @Autowired
     public PatientService(PatientRepository patientRepository) {
         this.patientRepository = patientRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public Patient createPatient(String cpf, String name, LocalDate dateOfBirth, String address, String medicalHistory) {
-        Patient patient = PatientFactory.createPatient(cpf, name, dateOfBirth, address, medicalHistory);
+    public Patient createPatient(String cpf, String name, LocalDate dateOfBirth, String address, String medicalHistory, String email, String rawPassword) {
+        String hashedPassword = passwordEncoder.encode(rawPassword);
+        Patient patient = new Patient(cpf, email, hashedPassword, name, dateOfBirth, address, medicalHistory);
         return patientRepository.save(patient);
+    }
+
+    public Optional<Patient> authenticatePatient(String email, String rawPassword) {
+        Optional<Patient> patient = patientRepository.findByEmail(email);
+        if (patient.isPresent() && passwordEncoder.matches(rawPassword, patient.get().getPassword())) {
+            return patient;
+        }
+        return Optional.empty();
     }
 
     public Optional<Patient> getPatientByCpf(String cpf) {

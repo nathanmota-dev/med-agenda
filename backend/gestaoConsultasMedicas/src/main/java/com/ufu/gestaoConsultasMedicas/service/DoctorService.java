@@ -4,8 +4,10 @@ import com.ufu.gestaoConsultasMedicas.models.Doctor;
 import com.ufu.gestaoConsultasMedicas.repository.DoctorRepository;
 import com.ufu.gestaoConsultasMedicas.strategy.DoctorSearchStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +16,20 @@ public class DoctorService {
 
     private final DoctorRepository doctorRepository;
     private DoctorSearchStrategy searchStrategy;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     public DoctorService(DoctorRepository doctorRepository) {
         this.doctorRepository = doctorRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
+
+    public Optional<Doctor> authenticateDoctor(String email, String rawPassword) {
+        Optional<Doctor> doctor = doctorRepository.findByEmail(email);
+        if (doctor.isPresent() && passwordEncoder.matches(rawPassword, doctor.get().getPassword())) {
+            return doctor;
+        }
+        return Optional.empty();
     }
 
         public void setSearchStrategy(DoctorSearchStrategy searchStrategy) {
@@ -25,6 +37,8 @@ public class DoctorService {
     }
 
     public Doctor addDoctor(Doctor doctor) {
+        String hashedPassword = passwordEncoder.encode(doctor.getPassword());
+        doctor.setPassword(hashedPassword);
         return doctorRepository.save(doctor);
     }
 
@@ -52,5 +66,9 @@ public class DoctorService {
     public List<Doctor> searchDoctors(String keyword) {
         List<Doctor> allDoctors = getAllDoctors();
         return searchStrategy.search(keyword, allDoctors);
+    }
+
+    public List<LocalDate> getConsultationDatesByCrm(String crm) {
+        return doctorRepository.findConsultationDatesByCrm(crm);
     }
 }
