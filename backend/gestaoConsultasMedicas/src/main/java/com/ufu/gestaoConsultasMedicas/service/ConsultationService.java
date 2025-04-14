@@ -20,33 +20,41 @@ public class ConsultationService {
     private final ConsultationRepository consultationRepository;
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
+    private final EmailService emailService;
 
     @Autowired
     public ConsultationService(ConsultationRepository consultationRepository,
                                DoctorRepository doctorRepository,
-                               PatientRepository patientRepository) {
+                               PatientRepository patientRepository, EmailService emailService) {
         this.consultationRepository = consultationRepository;
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
+        this.emailService = emailService;
     }
 
     public Consultation createConsultation(Patient patient, Doctor doctor, LocalDate date, boolean isUrgent, String observation) {
-        // Verifique se o médico e o paciente existem
-        if (!doctorRepository.existsById(doctor.getCrm())) {
-            throw new IllegalArgumentException("Médico com CRM " + doctor.getCrm() + " não encontrado.");
-        }
-        if (!patientRepository.existsById(patient.getCpf())) {
-            throw new IllegalArgumentException("Paciente com CPF " + patient.getCpf() + " não encontrado.");
-        }
+        Patient patientFromDb = patientRepository.findByCpf(patient.getCpf())
+                .orElseThrow(() -> new IllegalArgumentException("Paciente com CPF " + patient.getCpf() + " não encontrado."));
+
+        Doctor doctorFromDb = doctorRepository.findByCrm(doctor.getCrm())
+                .orElseThrow(() -> new IllegalArgumentException("Médico com CRM " + doctor.getCrm() + " não encontrado."));
 
         // Criação da consulta
         Consultation consultation = new Consultation();
         consultation.setConsultationId(UUID.randomUUID());
         consultation.setDate(date);
-        consultation.setPatient(patient);
-        consultation.setDoctor(doctor);
+        consultation.setPatient(patientFromDb);
+        consultation.setDoctor(doctorFromDb);
         consultation.setUrgent(isUrgent);
         consultation.setObservation(observation);
+
+        // Envio de e-mail
+        emailService.sendEmail(
+                "delivered@resend.dev",
+                "Consulta confirmada",
+                "Sua consulta foi marcada para " + consultation.getDate()
+        );
+
         return consultationRepository.save(consultation);
     }
 
