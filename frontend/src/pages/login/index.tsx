@@ -1,42 +1,65 @@
-import { useState } from 'react'
-import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
-import { useNavigate, Link } from 'react-router-dom'
-import api from '../../api/api'
+import { useState } from 'react';
+import { useNavigate, useParams, Link } from 'react-router-dom';
+import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
+import api from '../../api/api';
+
+const loginRoutes = {
+    admin: {
+        title: 'Administrador',
+        apiRoute: '/admin/login',
+        redirect: '/admin/dash',
+        registerRoute: '/admin/register',
+    },
+    doctor: {
+        title: 'Médico',
+        apiRoute: '/doctor/login',
+        redirect: '/doctor/dash',
+    },
+    patient: {
+        title: 'Paciente',
+        apiRoute: '/patient/login',
+        redirect: '/patient/dash',
+        registerRoute: '/patient/register',
+    },
+} as const;
 
 export default function Login() {
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    const [showPassword, setShowPassword] = useState<boolean>(false)
-    const [error, setError] = useState<string | null>(null)
-    const navigate = useNavigate()
+    const { userType = 'admin' } = useParams<{ userType: keyof typeof loginRoutes }>();
+    const config = loginRoutes[userType];
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword)
-    }
+        setShowPassword(!showPassword);
+    };
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        setError(null)
+        event.preventDefault();
+        setError(null);
 
         try {
-            const response = await api.post('/admin/login', { email, password })
-            console.log('Login bem-sucedido:', response.data)
-            navigate('/dash')
+            await api.post(config.apiRoute, { email, password });
+            navigate(config.redirect);
         } catch (err) {
-            setError('Credenciais inválidas. Verifique seu e-mail e senha.')
+            setError('Credenciais inválidas. Verifique seu e-mail e senha.');
         }
-    }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <div>
-                    <div className='flex justify-center items-center'>
-                        <img className='w-32 h-32' src="/logo.png" alt="Logo" />
-                    </div>
-                    <h1 className="text-center text-3xl font-extrabold text-blue-600">MedAgenda</h1>
-                    <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">Faça login</h2>
+                <div className="flex justify-center items-center">
+                    <img className="w-32 h-32" src="/logo.png" alt="Logo" />
                 </div>
+                <h1 className="text-center text-3xl font-extrabold text-blue-600">MedAgenda</h1>
+                <h2 className="mt-6 text-center text-2xl font-bold text-gray-900">
+                    Você está acessando como <span className="text-blue-600">{config.title}</span>
+                </h2>
             </div>
 
             <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -89,21 +112,13 @@ export default function Login() {
                                         onClick={togglePasswordVisibility}
                                         className="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500"
                                     >
-                                        {showPassword ? (
-                                            <EyeOff className="h-5 w-5" aria-hidden="true" />
-                                        ) : (
-                                            <Eye className="h-5 w-5" aria-hidden="true" />
-                                        )}
+                                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        {error && (
-                            <div className="text-red-500 text-sm">
-                                {error}
-                            </div>
-                        )}
+                        {error && <div className="text-red-500 text-sm">{error}</div>}
 
                         <div className="flex items-center justify-between">
                             <div className="flex items-center">
@@ -118,11 +133,13 @@ export default function Login() {
                                 </label>
                             </div>
 
-                            <div className="text-sm">
-                                <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                                    Ainda não tem conta? Registrar
-                                </Link>
-                            </div>
+                            {'registerRoute' in config && (
+                                <div id="register" className="text-sm">
+                                    <Link to={config.registerRoute} className="font-medium text-blue-600 hover:text-blue-500">
+                                        Ainda não tem conta? Registrar
+                                    </Link>
+                                </div>
+                            )}
                         </div>
 
                         <div>
@@ -137,5 +154,5 @@ export default function Login() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
