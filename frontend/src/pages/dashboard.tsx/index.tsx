@@ -3,7 +3,7 @@ import { Calendar, Users, UserRound, Stethoscope, LayoutDashboard, ClipboardList
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../../api/api'
 
-export default function Dashboard() {
+export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState('Dashboard')
     const [totalConsultations, setTotalConsultations] = useState<number>(0)
     const [totalPatients, setTotalPatients] = useState<number>(0)

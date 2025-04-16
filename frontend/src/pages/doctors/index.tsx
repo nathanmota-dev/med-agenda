@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import api from '../../api/api';
 
-export default function Doctors() {
+export default function AdminDoctors() {
     const [name, setName] = useState('');
     const [crm, setCrm] = useState('');
     const [specialty, setSpecialty] = useState('');
