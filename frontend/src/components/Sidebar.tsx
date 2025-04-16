@@ -2,19 +2,19 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, UserPlus, Users, Stethoscope, ClipboardList, FileOutput, Settings, LogOut } from 'lucide-react';
 
 const sidebarItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, url: '/dash' },
-    { name: 'Cadastro', icon: UserPlus, url: '/admin' },
-    { name: 'Pacientes', icon: Users, url: '/patients' },
-    { name: 'Médicos', icon: Stethoscope, url: '/doctors' },
-    { name: 'Consultas', icon: ClipboardList, url: '/consultations' },
+    { name: 'Dashboard', icon: LayoutDashboard, url: '/admin/dash' },
+    { name: 'Cadastro', icon: UserPlus, url: '/admin/dash/admin' },
+    { name: 'Pacientes', icon: Users, url: '/admin/dash/patients' },
+    { name: 'Médicos', icon: Stethoscope, url: '/admin/dash/doctors' },
+    { name: 'Consultas', icon: ClipboardList, url: '/admin/dash/consultations' },
     { name: 'Exportar dados', icon: FileOutput, url: '#' },
     { name: 'Configurações', icon: Settings, url: '#' },
-    { name: 'Logout', icon: LogOut, url: '/login' }
+    { name: 'Logout', icon: LogOut, url: '/admin/login' }
 ];
 
 export default function Sidebar() {
     const navigate = useNavigate();
-    const handleLogout = () => navigate('/login');
+    const handleLogout = () => navigate('/admin/login');
 
     return (
         <aside className="w-64 bg-white shadow-md">
