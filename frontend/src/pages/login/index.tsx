@@ -17,7 +17,7 @@ const loginRoutes = {
     },
     patient: {
         title: 'Paciente',
-        apiRoute: '/patient/login',
+        apiRoute: '/patients/login',
         redirect: '/patient/dash',
         registerRoute: '/patient/register',
     },
@@ -44,6 +44,15 @@ export default function Login() {
 
         try {
             await api.post(config.apiRoute, { email, password });
+
+            if (userType === 'doctor') {
+                localStorage.setItem("email", email);
+
+                const res = await api.get(`/doctor/search?email=${email}`);
+                const crm = res.data[0]?.crm;
+                if (crm) localStorage.setItem("crm", crm);
+            }
+
             navigate(config.redirect);
         } catch (err) {
             setError('Credenciais inválidas. Verifique seu e-mail e senha.');
