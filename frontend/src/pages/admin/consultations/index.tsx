@@ -1,52 +1,59 @@
 import { useState } from 'react';
 import api from '../../../api/api';
 
+interface ConsultationData {
+    consultationId: string;
+    dateTime: string;
+    patient: { cpf: string };
+    doctor: { crm: string };
+    isUrgent: boolean;
+    observation: string;
+}
+
 export default function AdminConsultations() {
-    const [date, setDate] = useState('');
-    const [patientId, setPatientId] = useState('');
-    const [doctorId, setDoctorId] = useState('');
+    const [dateTime, setDateTime] = useState('');              // datetime-local
+    const [patientCpf, setPatientCpf] = useState('');
+    const [doctorCrm, setDoctorCrm] = useState('');
     const [isUrgent, setIsUrgent] = useState(false);
     const [observation, setObservation] = useState('');
     const [consultationId, setConsultationId] = useState('');
-    const [consultationData, setConsultationData] = useState<any>(null);
+    const [consultationData, setConsultationData] = useState<ConsultationData | null>(null);
     const [message, setMessage] = useState('');
 
-    // Função para agendar uma nova consulta
-    const handleCreateConsultation = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+
+    const handleCreateConsultation = async (e: React.FormEvent) => {
+        e.preventDefault();
         setMessage('');
 
         try {
             await api.post('/consultations/create', {
-                date,
-                patientId,
-                doctorId,
-                isUrgent,
+                patient: { cpf: patientCpf },
+                doctor: { crm: doctorCrm },
+                dateTime,
+                urgent: isUrgent,
                 observation
             });
             setMessage('Consulta agendada com sucesso!');
-            setDate('');
-            setPatientId('');
-            setDoctorId('');
+            setDateTime('');
+            setPatientCpf('');
+            setDoctorCrm('');
             setIsUrgent(false);
             setObservation('');
-        } catch (error) {
+        } catch {
             setMessage('Erro ao agendar consulta. Tente novamente.');
-            console.error(error);
         }
     };
 
-    // Função para buscar uma consulta pelo ID
+    // Buscar consulta por ID
     const handleFetchConsultationById = async () => {
         setMessage('');
         setConsultationData(null);
 
         try {
-            const response = await api.get(`/consultations/${consultationId}`);
-            setConsultationData(response.data);
-        } catch (error) {
+            const res = await api.get<ConsultationData>(`/consultations/${consultationId}`);
+            setConsultationData(res.data);
+        } catch {
             setMessage('Erro ao buscar consulta. Verifique o ID e tente novamente.');
-            console.error(error);
         }
     };
 
@@ -59,11 +66,11 @@ export default function AdminConsultations() {
                 <h3 className="text-xl font-semibold mb-4">Agendar Nova Consulta</h3>
                 <form onSubmit={handleCreateConsultation} className="space-y-4">
                     <div>
-                        <label className="block text-gray-700">Data da Consulta</label>
+                        <label className="block text-gray-700">Data e Hora</label>
                         <input
-                            type="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
+                            type="datetime-local"
+                            value={dateTime}
+                            onChange={e => setDateTime(e.target.value)}
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
                             required
                         />
@@ -72,8 +79,8 @@ export default function AdminConsultations() {
                         <label className="block text-gray-700">CPF do Paciente</label>
                         <input
                             type="text"
-                            value={patientId}
-                            onChange={(e) => setPatientId(e.target.value)}
+                            value={patientCpf}
+                            onChange={e => setPatientCpf(e.target.value)}
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
                             required
                         />
@@ -82,8 +89,8 @@ export default function AdminConsultations() {
                         <label className="block text-gray-700">CRM do Médico</label>
                         <input
                             type="text"
-                            value={doctorId}
-                            onChange={(e) => setDoctorId(e.target.value)}
+                            value={doctorCrm}
+                            onChange={e => setDoctorCrm(e.target.value)}
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
                             required
                         />
@@ -92,7 +99,7 @@ export default function AdminConsultations() {
                         <input
                             type="checkbox"
                             checked={isUrgent}
-                            onChange={(e) => setIsUrgent(e.target.checked)}
+                            onChange={e => setIsUrgent(e.target.checked)}
                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                         />
                         <label className="ml-2 text-gray-700">Consulta Urgente</label>
@@ -101,13 +108,13 @@ export default function AdminConsultations() {
                         <label className="block text-gray-700">Observações</label>
                         <textarea
                             value={observation}
-                            onChange={(e) => setObservation(e.target.value)}
+                            onChange={e => setObservation(e.target.value)}
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
-                        ></textarea>
+                        />
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-blue-600 text-white p-2 rounded mt-4 hover:bg-blue-700"
+                        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
                     >
                         Agendar Consulta
                     </button>
@@ -115,7 +122,7 @@ export default function AdminConsultations() {
                 {message && <p className="mt-4 text-center text-red-600">{message}</p>}
             </div>
 
-            {/* Buscar Consulta pelo ID */}
+            {/* Buscar Consulta */}
             <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4">Buscar Consulta por ID</h3>
                 <div className="flex space-x-4">
@@ -123,7 +130,7 @@ export default function AdminConsultations() {
                         type="text"
                         placeholder="Digite o ID da consulta"
                         value={consultationId}
-                        onChange={(e) => setConsultationId(e.target.value)}
+                        onChange={e => setConsultationId(e.target.value)}
                         className="p-2 border border-gray-300 rounded w-full"
                     />
                     <button
@@ -136,11 +143,17 @@ export default function AdminConsultations() {
                 {consultationData && (
                     <div className="mt-4 p-4 border border-gray-300 rounded bg-gray-50">
                         <h4 className="font-semibold">Dados da Consulta:</h4>
-                        <p><strong>ID:</strong> {consultationData.id}</p>
-                        <p><strong>Data:</strong> {consultationData.date}</p>
-                        <p><strong>Paciente (CPF):</strong> {consultationData.patientId}</p>
-                        <p><strong>Médico (CRM):</strong> {consultationData.doctorId}</p>
-                        <p><strong>Urgente:</strong> {consultationData.isUrgent ? 'Sim' : 'Não'}</p>
+                        <p><strong>ID:</strong> {consultationData.consultationId}</p>
+                        <p>
+                            <strong>Data e Hora:</strong>{' '}
+                            {new Date(consultationData.dateTime).toLocaleString('pt-BR')}
+                        </p>
+                        <p><strong>Paciente (CPF):</strong> {consultationData.patient.cpf}</p>
+                        <p><strong>Médico (CRM):</strong> {consultationData.doctor.crm}</p>
+                        <p>
+                            <strong>Urgente:</strong>{' '}
+                            {consultationData.isUrgent ? 'Sim' : 'Não'}
+                        </p>
                         <p><strong>Observações:</strong> {consultationData.observation}</p>
                     </div>
                 )}

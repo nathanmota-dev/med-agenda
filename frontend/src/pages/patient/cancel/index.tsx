@@ -1,66 +1,69 @@
-import { useState, useEffect } from 'react';
-import api from '../../../api/api';
+import { useState, useEffect } from 'react'
+import api from '../../../api/api'
 
 interface Consultation {
-  consultationId: string;
-  date: string;
+  consultationId: string
+  dateTime: string
   doctor: {
-    name: string;
-  };
+    name: string
+  }
 }
 
 function formatDate(iso: string) {
-  const [year, month, day] = iso.split('-');
-  return `${day}/${month}/${year}`;
+  const [date] = iso.split('T')
+  const [year, month, day] = date.split('-')
+  return `${day}/${month}/${year}`
 }
 
 export default function PatientCancel() {
-  const [consultations, setConsultations] = useState<Consultation[]>([]);
-  const [selectedId, setSelectedId] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
-  const patientCpf = localStorage.getItem('cpf') || '';
+  const [consultations, setConsultations] = useState<Consultation[]>([])
+  const [selectedId, setSelectedId] = useState<string>('')
+  const [message, setMessage] = useState<string>('')
+  const patientCpf = localStorage.getItem('cpf') || ''
 
   useEffect(() => {
     if (!patientCpf) {
-      setMessage('CPF do paciente não encontrado. Faça login novamente.');
-      return;
+      setMessage('CPF do paciente não encontrado. Faça login novamente.')
+      return
     }
+
     api
       .get<Consultation[]>(`/consultations/patient-history/${patientCpf}`)
       .then(res => {
-        // filtra apenas consultas com data >= hoje
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
         const upcoming = res.data.filter(c => {
-          const cDate = new Date(c.date);
-          cDate.setHours(0, 0, 0, 0);
-          return cDate >= today;
-        });
-        setConsultations(upcoming);
+          const cDate = new Date(c.dateTime)
+          cDate.setHours(0, 0, 0, 0)
+          return cDate >= today
+        })
+
+        setConsultations(upcoming)
       })
       .catch(err => {
-        console.error('Erro ao carregar consultas:', err);
-        setMessage('Erro ao carregar suas consultas.');
-      });
-  }, [patientCpf]);
+        console.error('Erro ao carregar consultas:', err)
+        setMessage('Erro ao carregar suas consultas.')
+      })
+  }, [patientCpf])
 
   const handleCancel = async () => {
     if (!selectedId) {
-      setMessage('Selecione uma consulta para cancelar.');
-      return;
+      setMessage('Selecione uma consulta para cancelar.')
+      return
     }
     try {
-      await api.delete(`/consultations/${selectedId}`);
+      await api.delete(`/consultations/${selectedId}`)
       setConsultations(prev =>
         prev.filter(c => c.consultationId !== selectedId)
-      );
-      setMessage('Consulta cancelada com sucesso!');
-      setSelectedId('');
+      )
+      setMessage('Consulta cancelada com sucesso!')
+      setSelectedId('')
     } catch (err) {
-      console.error('Erro ao cancelar consulta:', err);
-      setMessage('Falha ao cancelar consulta. Tente novamente.');
+      console.error('Erro ao cancelar consulta:', err)
+      setMessage('Falha ao cancelar consulta. Tente novamente.')
     }
-  };
+  }
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -71,7 +74,9 @@ export default function PatientCancel() {
       )}
 
       {consultations.length === 0 ? (
-        <p className="text-gray-700">Você não tem consultas futuras para cancelar.</p>
+        <p className="text-gray-700">
+          Você não tem consultas futuras para cancelar.
+        </p>
       ) : (
         <div className="space-y-4">
           <label className="block text-gray-700">Escolha a consulta:</label>
@@ -83,7 +88,7 @@ export default function PatientCancel() {
             <option value="">-- Selecione --</option>
             {consultations.map(c => (
               <option key={c.consultationId} value={c.consultationId}>
-                {formatDate(c.date)} — {c.doctor.name}
+                {formatDate(c.dateTime)} — {c.doctor.name}
               </option>
             ))}
           </select>
@@ -97,5 +102,5 @@ export default function PatientCancel() {
         </div>
       )}
     </div>
-  );
+  )
 }

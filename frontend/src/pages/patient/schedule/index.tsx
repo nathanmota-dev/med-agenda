@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../../../api/api';
 
 export default function PatientSchedule() {
-  const [date, setDate] = useState('');
+  const [dateTime, setDateTime] = useState('');
   const [doctorCrm, setDoctorCrm] = useState('');
   const [doctors, setDoctors] = useState<{ crm: string; name: string }[]>([]);
   const [observation, setObservation] = useState('');
@@ -30,8 +30,8 @@ export default function PatientSchedule() {
       setMessage('Selecione um médico.');
       return;
     }
-    if (!date) {
-      setMessage('Escolha uma data.');
+    if (!dateTime) {
+      setMessage('Escolha data e hora da consulta.');
       return;
     }
 
@@ -39,12 +39,13 @@ export default function PatientSchedule() {
       await api.post('/consultations/create', {
         patient: { cpf: patientCpf, email: patientEmail },
         doctor: { crm: doctorCrm },
-        date,              
+        dateTime,
         urgent: isUrgent,
         observation,
       });
+
       setMessage('Consulta agendada com sucesso!');
-      setDate('');
+      setDateTime('');
       setDoctorCrm('');
       setObservation('');
       setIsUrgent(false);
@@ -58,14 +59,13 @@ export default function PatientSchedule() {
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Agendar Nova Consulta</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Calendário nativo */}
+        {/* Input datetime-local */}
         <div>
-          <label className="block text-gray-700">Data da Consulta</label>
+          <label className="block text-gray-700">Data e Hora da Consulta</label>
           <input
-            type="date"
-            lang="pt-BR"
-            value={date}
-            onChange={e => setDate(e.target.value)}
+            type="datetime-local"
+            value={dateTime}
+            onChange={e => setDateTime(e.target.value)}
             className="mt-1 p-2 border border-gray-300 rounded w-full"
             required
           />
