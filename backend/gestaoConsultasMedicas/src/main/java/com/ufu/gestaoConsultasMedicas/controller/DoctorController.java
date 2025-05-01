@@ -3,6 +3,7 @@ package com.ufu.gestaoConsultasMedicas.controller;
 import com.ufu.gestaoConsultasMedicas.models.Doctor;
 import com.ufu.gestaoConsultasMedicas.service.DoctorService;
 import com.ufu.gestaoConsultasMedicas.strategy.SearchDoctorByCrm;
+import com.ufu.gestaoConsultasMedicas.strategy.SearchDoctorByEmail;
 import com.ufu.gestaoConsultasMedicas.strategy.SearchDoctorByName;
 import com.ufu.gestaoConsultasMedicas.strategy.SearchDoctorBySpecialty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,8 @@ public class DoctorController {
     public ResponseEntity<List<Doctor>> searchDoctors(
             @RequestParam(required = false) String crm,
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String specialty) {
+            @RequestParam(required = false) String specialty,
+            @RequestParam(required = false) String email) {
 
         // Definindo a estratégia de busca com base no parâmetro fornecido
         if (crm != null) {
@@ -77,6 +79,9 @@ public class DoctorController {
         } else if (specialty != null) {
             doctorService.setSearchStrategy(new SearchDoctorBySpecialty());
             return ResponseEntity.ok(doctorService.searchDoctors(specialty));
+        } else if (email != null) {
+            doctorService.setSearchStrategy(new SearchDoctorByEmail());
+            return ResponseEntity.ok(doctorService.searchDoctors(email));
         } else {
             return ResponseEntity.badRequest().body(null);  // Retorna 400 se nenhum parâmetro for passado
         }

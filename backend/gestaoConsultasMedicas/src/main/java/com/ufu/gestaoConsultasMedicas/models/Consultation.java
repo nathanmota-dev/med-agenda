@@ -19,7 +19,6 @@ public class Consultation {
 
     @ManyToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "cpf", nullable = false)
-    @JsonBackReference
     private Patient patient;
 
     @ManyToOne

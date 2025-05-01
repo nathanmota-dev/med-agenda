@@ -31,4 +31,9 @@ public class DiagnosisService {
         return Optional.empty();
     }
 
+    public Optional<Diagnosis> findByConsultationId(UUID consultationId) {
+        return diagnosisRepository.findByConsulta_ConsultationId(consultationId);
+    }
+
+
 }

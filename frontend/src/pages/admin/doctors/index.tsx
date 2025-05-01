@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import api from '../../api/api';
+import api from '../../../api/api';
 
-export default function Doctors() {
+export default function AdminDoctors() {
     const [name, setName] = useState('');
     const [crm, setCrm] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [specialty, setSpecialty] = useState('');
     const [telephone, setTelephone] = useState('');
     const [doctorCrm, setDoctorCrm] = useState('');
@@ -19,12 +21,16 @@ export default function Doctors() {
             await api.post('/doctor/create', {
                 name,
                 crm,
+                email,
+                password,
                 specialty,
                 telephone
             });
             setMessage('Médico cadastrado com sucesso!');
             setName('');
             setCrm('');
+            setEmail('');
+            setPassword('');
             setSpecialty('');
             setTelephone('');
         } catch (error) {
@@ -71,6 +77,26 @@ export default function Doctors() {
                             type="text"
                             value={crm}
                             onChange={(e) => setCrm(e.target.value)}
+                            className="mt-1 p-2 border border-gray-300 rounded w-full"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Email</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="mt-1 p-2 border border-gray-300 rounded w-full"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Senha</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
                             required
                         />
@@ -128,6 +154,7 @@ export default function Doctors() {
                         <h4 className="font-semibold">Dados do Médico:</h4>
                         <p><strong>CRM:</strong> {doctorData[0].crm}</p>
                         <p><strong>Nome:</strong> {doctorData[0].name}</p>
+                        <p><strong>Email:</strong> {doctorData[0].email}</p>
                         <p><strong>Especialidade:</strong> {doctorData[0].specialty}</p>
                         <p><strong>Telefone:</strong> {doctorData[0].telephone}</p>
                     </div>

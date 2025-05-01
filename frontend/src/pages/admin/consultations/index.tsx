@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import api from '../../api/api';
+import api from '../../../api/api';
 
-export default function Consultations() {
+export default function AdminConsultations() {
     const [date, setDate] = useState('');
     const [patientId, setPatientId] = useState('');
     const [doctorId, setDoctorId] = useState('');
@@ -53,7 +53,7 @@ export default function Consultations() {
     return (
         <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-bold mb-4">Gerenciamento de Consultas</h2>
-            
+
             {/* Agendar Consulta */}
             <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4">Agendar Nova Consulta</h3>
