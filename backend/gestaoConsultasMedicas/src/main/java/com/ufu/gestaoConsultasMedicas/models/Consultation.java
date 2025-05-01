@@ -1,9 +1,9 @@
 package com.ufu.gestaoConsultasMedicas.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -14,8 +14,11 @@ public class Consultation {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID consultationId;
 
-    @Column(name = "date", nullable = false)
-    private LocalDate date;
+    @Column(name = "date_time", nullable = false)
+    private LocalDateTime dateTime;
+
+    @Column(name = "duracao_minutos", nullable = false)
+    private int duracaoMinutos = 60;
 
     @ManyToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "cpf", nullable = false)
@@ -34,12 +37,13 @@ public class Consultation {
     public Consultation() {
     }
 
-    public Consultation(UUID consultationId, LocalDate date, Patient patient, Doctor doctor, boolean isUrgent) {
+    public Consultation(UUID consultationId, LocalDateTime dateTime, Patient patient, Doctor doctor, boolean isUrgent) {
         this.consultationId = consultationId;
-        this.date = date;
+        this.dateTime = dateTime;
         this.patient = patient;
         this.doctor = doctor;
         this.isUrgent = isUrgent;
+        this.duracaoMinutos = 60;
     }
 
     public UUID getConsultationId() {
@@ -50,12 +54,20 @@ public class Consultation {
         this.consultationId = consultationId;
     }
 
-    public LocalDate getDate() {
-        return date;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public int getDuracaoMinutos() {
+        return duracaoMinutos;
+    }
+
+    public void setDuracaoMinutos(int duracaoMinutos) {
+        this.duracaoMinutos = duracaoMinutos;
     }
 
     public Patient getPatient() {
@@ -79,8 +91,7 @@ public class Consultation {
         return isUrgent;
     }
 
-
-        public void setUrgent(boolean urgent) {
+    public void setUrgent(boolean urgent) {
         isUrgent = urgent;
     }
 

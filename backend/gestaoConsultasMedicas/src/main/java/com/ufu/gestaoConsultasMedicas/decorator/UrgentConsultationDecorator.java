@@ -5,6 +5,7 @@ import com.ufu.gestaoConsultasMedicas.models.Doctor;
 import com.ufu.gestaoConsultasMedicas.models.Patient;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UrgentConsultationDecorator implements ConsultationService {
 
@@ -15,9 +16,8 @@ public class UrgentConsultationDecorator implements ConsultationService {
     }
 
     @Override
-    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDate date, String observation) {
-        // Criação de uma consulta urgente
-        Consultation consultation = decoratedService.createConsultation(patient, doctor, date, observation);
+    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDateTime dateTime, String observation) {
+        Consultation consultation = decoratedService.createConsultation(patient, doctor, dateTime, observation);
         consultation.setUrgent(true);
         return consultation;
     }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class ConsultationController {
         Consultation createdConsultation = consultationService.createConsultation(
                 consultation.getPatient(),
                 consultation.getDoctor(),
-                consultation.getDate(),
+                consultation.getDateTime(),
                 consultation.isUrgent(),
                 consultation.getObservation()
         );
@@ -40,7 +41,7 @@ public class ConsultationController {
 
         Optional<Consultation> updatedConsultation = consultationService.updateConsultation(
                 consultationUpdateRequest.getConsultationId(),
-                consultationUpdateRequest.getDate(),
+                consultationUpdateRequest.getDateTime(),
                 consultationUpdateRequest.getObservation()
         );
 
@@ -76,5 +77,4 @@ public class ConsultationController {
         List<Consultation> consultations = consultationService.getPatientConsultationHistory(cpf);
         return ResponseEntity.ok(consultations);
     }
-
 }

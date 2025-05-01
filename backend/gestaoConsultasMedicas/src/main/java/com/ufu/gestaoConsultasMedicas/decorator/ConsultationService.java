@@ -5,7 +5,8 @@ import com.ufu.gestaoConsultasMedicas.models.Doctor;
 import com.ufu.gestaoConsultasMedicas.models.Patient;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ConsultationService {
-    Consultation createConsultation(Patient patient, Doctor doctor, LocalDate date, String observation);
+    Consultation createConsultation(Patient patient, Doctor doctor, LocalDateTime dateTime, String observation);
 }
