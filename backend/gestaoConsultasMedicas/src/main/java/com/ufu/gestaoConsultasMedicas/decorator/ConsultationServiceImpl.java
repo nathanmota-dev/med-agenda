@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -21,8 +22,8 @@ public class ConsultationServiceImpl implements ConsultationService {
     }
 
     @Override
-    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDate date, String observation) {
-        Consultation consultation = new Consultation(UUID.randomUUID(), date, patient, doctor, false);
+    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDateTime dateTime, String observation) {
+        Consultation consultation = new Consultation(UUID.randomUUID(), dateTime, patient, doctor, false);
         consultation.setObservation(observation);
         return consultationRepository.save(consultation);
     }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import api from '../../../api/api';
 
-export default function Patients() {
+export default function AdminPatients() {
     const [name, setName] = useState('');
     const [cpf, setCpf] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');

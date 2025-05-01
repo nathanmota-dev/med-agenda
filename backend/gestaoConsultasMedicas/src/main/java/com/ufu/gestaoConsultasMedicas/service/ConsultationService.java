@@ -9,7 +9,7 @@ import com.ufu.gestaoConsultasMedicas.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,14 +25,15 @@ public class ConsultationService {
     @Autowired
     public ConsultationService(ConsultationRepository consultationRepository,
                                DoctorRepository doctorRepository,
-                               PatientRepository patientRepository, EmailService emailService) {
+                               PatientRepository patientRepository,
+                               EmailService emailService) {
         this.consultationRepository = consultationRepository;
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
         this.emailService = emailService;
     }
 
-    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDate date, boolean isUrgent, String observation) {
+    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDateTime dateTime, boolean isUrgent, String observation) {
         Patient patientFromDb = patientRepository.findByCpf(patient.getCpf())
                 .orElseThrow(() -> new IllegalArgumentException("Paciente com CPF " + patient.getCpf() + " não encontrado."));
 
@@ -42,7 +43,8 @@ public class ConsultationService {
         // Criação da consulta
         Consultation consultation = new Consultation();
         consultation.setConsultationId(UUID.randomUUID());
-        consultation.setDate(date);
+        consultation.setDateTime(dateTime);
+        consultation.setDuracaoMinutos(60);
         consultation.setPatient(patientFromDb);
         consultation.setDoctor(doctorFromDb);
         consultation.setUrgent(isUrgent);
@@ -52,15 +54,15 @@ public class ConsultationService {
         emailService.sendEmail(
                 "delivered@resend.dev",
                 "Consulta confirmada",
-                "Sua consulta foi marcada para " + consultation.getDate()
+                "Sua consulta foi marcada para " + consultation.getDateTime()
         );
 
         return consultationRepository.save(consultation);
     }
 
-    public Optional<Consultation> updateConsultation(UUID consultationId, LocalDate date, String observation) {
+    public Optional<Consultation> updateConsultation(UUID consultationId, LocalDateTime dateTime, String observation) {
         return consultationRepository.findById(consultationId).map(consultation -> {
-            consultation.setDate(date);
+            consultation.setDateTime(dateTime);
             consultation.setObservation(observation);
             return consultationRepository.save(consultation);
         });
@@ -85,5 +87,4 @@ public class ConsultationService {
     public List<Consultation> getPatientConsultationHistory(String patientCpf) {
         return consultationRepository.findByPatient_Cpf(patientCpf);
     }
-
 }

@@ -9,6 +9,7 @@ import Register from './pages/register';
 import Admin from './pages/admin/admin';
 import AdminDashboard from './pages/admin/dashboard.tsx';
 import AdminDoctors from './pages/admin/doctors';
+import AdminPatients from './pages/admin/patients/index.tsx';
 import AdminConsultations from './pages/admin/consultations';
 
 import DoctorDashboard from './pages/doctor/dashboard';
@@ -24,6 +25,7 @@ import PatientHistory from './pages/patient/history';
 import PatientPayments from './pages/patient/payments';
 
 import Layout from './components/Layout';
+
 
 export default function App() {
   return (
@@ -42,7 +44,7 @@ export default function App() {
         <Route path="dash" element={<AdminDashboard />} />
         <Route path="dash/admin" element={<Admin />} />
         <Route path="dash/doctors" element={<AdminDoctors />} />
-        <Route path="dash/patients" element={<AdminConsultations />} />
+        <Route path="dash/patients" element={<AdminPatients />} />
         <Route path="dash/consultations" element={<AdminConsultations />} />
       </Route>
 

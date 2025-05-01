@@ -9,7 +9,7 @@ import com.ufu.gestaoConsultasMedicas.models.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class ConsultationFacade {
@@ -21,7 +21,7 @@ public class ConsultationFacade {
         this.consultationService = consultationServiceImpl;
     }
 
-    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDate date, boolean isUrgent, String observation) {
+    public Consultation createConsultation(Patient patient, Doctor doctor, LocalDateTime dateTime, boolean isUrgent, String observation) {
         ConsultationService service = consultationService;
 
         if (isUrgent) {
@@ -29,6 +29,6 @@ public class ConsultationFacade {
             service = new UrgentConsultationDecorator(service);
         }
 
-        return service.createConsultation(patient, doctor, date, observation);
+        return service.createConsultation(patient, doctor, dateTime, observation);
     }
 }

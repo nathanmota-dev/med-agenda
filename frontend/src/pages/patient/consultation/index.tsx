@@ -1,50 +1,56 @@
-import { useState, useEffect } from 'react';
-import api from '../../../api/api';
+import { useState, useEffect } from 'react'
+import api from '../../../api/api'
 
 interface Consultation {
-  consultationId: string;
-  date: string;
+  consultationId: string
+  dateTime: string
   doctor: {
-    name: string;
-    specialty: string;
-    telephone: string;
-  };
-  observation: string;
-  isUrgent: boolean;
+    name: string
+    specialty: string
+    telephone: string
+  }
+  observation: string
+  isUrgent: boolean
 }
 
-function formatDate(iso: string) {
-  const [year, month, day] = iso.split('-');
-  return `${day}/${month}/${year}`;
+function formatDateTime(iso: string) {
+  const [date, time] = iso.split('T')
+  const [y, m, d] = date.split('-')
+  return `${d}/${m}/${y} ${time.slice(0, 5)}`
 }
 
 export default function PatientConsultation() {
-  const [consultations, setConsultations] = useState<Consultation[]>([]);
-  const [message, setMessage] = useState<string>('');
-  const patientCpf = localStorage.getItem('cpf') || '';
+  const [consultations, setConsultations] = useState<Consultation[]>([])
+  const [message, setMessage] = useState<string>('')
+  const patientCpf = localStorage.getItem('cpf') || ''
 
   useEffect(() => {
     if (!patientCpf) {
-      setMessage('CPF do paciente não encontrado. Faça login novamente.');
-      return;
+      setMessage('CPF do paciente não encontrado. Faça login novamente.')
+      return
     }
+
     api
       .get<Consultation[]>(`/consultations/patient-history/${patientCpf}`)
       .then(res => {
-        setConsultations(res.data);
+        const today = new Date().toISOString().slice(0, 10)
+        const upcoming = res.data.filter(c =>
+          c.dateTime.slice(0, 10) >= today
+        )
+        setConsultations(upcoming)
       })
       .catch(err => {
-        console.error('Erro ao buscar consultas:', err);
-        setMessage('Erro ao carregar suas consultas. Tente novamente mais tarde.');
-      });
-  }, [patientCpf]);
+        console.error('Erro ao buscar consultas:', err)
+        setMessage('Erro ao carregar suas consultas. Tente novamente mais tarde.')
+      })
+  }, [patientCpf])
 
   if (message) {
     return (
       <div className="p-6 bg-white rounded-lg shadow-md">
         <p className="text-red-600">{message}</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -62,7 +68,7 @@ export default function PatientConsultation() {
         >
           <div className="flex justify-between items-center mb-2">
             <span className="text-lg font-semibold">
-              {formatDate(c.date)}
+              {formatDateTime(c.dateTime)}
             </span>
             {c.isUrgent && (
               <span className="text-sm text-red-600 font-medium">URGENTE</span>
@@ -73,16 +79,19 @@ export default function PatientConsultation() {
             <span className="font-medium">Médico:</span> {c.doctor.name}
           </p>
           <p className="text-gray-800">
-            <span className="font-medium">Especialidade:</span> {c.doctor.specialty}
+            <span className="font-medium">Especialidade:</span>{' '}
+            {c.doctor.specialty}
           </p>
           <p className="text-gray-800">
-            <span className="font-medium">Telefone:</span> {c.doctor.telephone}
+            <span className="font-medium">Telefone:</span>{' '}
+            {c.doctor.telephone}
           </p>
           <p className="text-gray-800 mt-2">
-            <span className="font-medium">Observações:</span> {c.observation || '—'}
+            <span className="font-medium">Observações:</span>{' '}
+            {c.observation || '—'}
           </p>
         </div>
       ))}
     </div>
-  );
+  )
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,8 +89,8 @@ public class DoctorController {
     }
 
     @GetMapping("/consultations/{crm}")
-    public ResponseEntity<List<LocalDate>> getConsultationDatesByDoctorCrm(@PathVariable String crm) {
-        List<LocalDate> dates = doctorService.getConsultationDatesByCrm(crm);
+    public ResponseEntity<List<LocalDateTime>> getConsultationDatesByDoctorCrm(@PathVariable String crm) {
+        List<LocalDateTime> dates = doctorService.getConsultationDatesByCrm(crm);
         return ResponseEntity.ok(dates);
     }
 }

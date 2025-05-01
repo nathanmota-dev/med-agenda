@@ -15,7 +15,7 @@ import api from "../../../api/api";
 
 interface FullConsulta {
   consultationId: string;
-  date: string;
+  dateTime: string;
   doctor: { crm: string };
   patient: { name: string; cpf: string };
 }
@@ -32,19 +32,16 @@ export default function DoctorWriteDiagnostics() {
     const crm = localStorage.getItem("crm");
     if (!crm) return;
 
-    api.get<FullConsulta[]>("/consultations/all").then((res) => {
-      const minhas = res.data.filter((c) => c.doctor.crm === crm);
-      setConsultas(minhas);
-    });
+    api.get<FullConsulta[]>("/consultations/all")
+      .then(res => {
+        const minhas = res.data.filter(c => c.doctor.crm === crm);
+        setConsultas(minhas);
+      })
+      .catch(err => console.error("Erro ao carregar consultas:", err));
   }, []);
 
   const handleSubmit = async () => {
-    if (
-      !consultaSelecionada ||
-      !descricao.trim() ||
-      !data ||
-      !cid.trim()
-    ) {
+    if (!consultaSelecionada || !descricao.trim() || !data || !cid.trim()) {
       setMensagem("Preencha todos os campos.");
       return;
     }
@@ -52,11 +49,9 @@ export default function DoctorWriteDiagnostics() {
     try {
       await api.post("/diagnosis", {
         descricao,
-        data,
+        data,   // yyyy-MM-dd
         cid,
-        consulta: {
-          consultationId: consultaSelecionada,
-        },
+        consulta: { consultationId: consultaSelecionada },
       });
       setMensagem("Diagnóstico registrado com sucesso.");
       setDescricao("");
@@ -64,6 +59,7 @@ export default function DoctorWriteDiagnostics() {
       setCid("");
       setConsultaSelecionada("");
     } catch (error) {
+      console.error(error);
       setMensagem("Erro ao registrar diagnóstico.");
     }
   };
@@ -82,15 +78,23 @@ export default function DoctorWriteDiagnostics() {
             <SelectValue placeholder="Selecione uma consulta" />
           </SelectTrigger>
           <SelectContent>
-            {consultas.map((c) => {
-              const dateStr = new Date(c.date + "T00:00:00")
-                .toLocaleDateString();
+            {consultas.map(c => {              
+              const dt = new Date(c.dateTime);
+              const dateStr = dt.toLocaleDateString("pt-BR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              });
+              const timeStr = dt.toLocaleTimeString("pt-BR", {
+                hour: "2-digit",
+                minute: "2-digit",
+              });
               return (
                 <SelectItem
                   key={c.consultationId}
                   value={c.consultationId}
                 >
-                  {c.patient.name} — {dateStr}
+                  {c.patient.name} — {dateStr} {timeStr}
                 </SelectItem>
               );
             })}
@@ -103,7 +107,7 @@ export default function DoctorWriteDiagnostics() {
         <Textarea
           placeholder="Descreva o diagnóstico..."
           value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
+          onChange={e => setDescricao(e.target.value)}
         />
       </div>
 
@@ -112,7 +116,7 @@ export default function DoctorWriteDiagnostics() {
         <Input
           type="date"
           value={data}
-          onChange={(e) => setData(e.target.value)}
+          onChange={e => setData(e.target.value)}
         />
       </div>
 
@@ -121,7 +125,7 @@ export default function DoctorWriteDiagnostics() {
         <Input
           placeholder="Ex: N39.0"
           value={cid}
-          onChange={(e) => setCid(e.target.value)}
+          onChange={e => setCid(e.target.value)}
         />
       </div>
 
