@@ -53,6 +53,16 @@ export default function Login() {
                 if (crm) localStorage.setItem("crm", crm);
             }
 
+            if(userType === 'patient'){
+                const res = await api.get('patients/list');
+                const patient = res.data.find((p: any) => p.email === email);
+                if(patient.cpf){
+                    localStorage.setItem('cpf', patient.cpf);
+                } else{
+                    console.warn("Paciente não encontrado!");
+                }
+            }
+
             navigate(config.redirect);
         } catch (err) {
             setError('Credenciais inválidas. Verifique seu e-mail e senha.');
