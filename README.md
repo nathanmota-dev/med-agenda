@@ -4,42 +4,53 @@
 
 # Med Agenda
 
-Med Agenda é um projeto desenvolvido para o gerenciamento de um consultório médico, incluindo a gestão de pacientes, doutores e consultas. Foi feito com Spring Boot e PostgreSQL, e atende aos requisitos de utilizar 5 padrões de projeto e 3 princípios de design.
+Med Agenda é um sistema para gerenciamento de consultório médico, contemplando pacientes, médicos e consultas.  
+O back-end foi implementado em Spring Boot com PostgreSQL, seguindo 5 padrões de projeto e 3 princípios de design.  
+O front-end foi desenvolvido em React.
 
 A documentação completa está disponível na [Wiki do projeto](https://github.com/nathanmota-dev/final-project-poo2/wiki).
+
+## Tecnologias
+
+- **Back-end**: Java + Spring Boot  
+- **Banco de Dados**: PostgreSQL + Neon.tech
+- **Front-end**: React + Vite
 
 ## Rotas da API
 
 | Rota                                     | Função                    | Descrição                                                                 |
 |------------------------------------------|---------------------------|---------------------------------------------------------------------------|
 | **HelloWorld**                           |                           |                                                                           |
-| `/`                                      | Hello World               | Exibe uma mensagem "Hello World".                                        |
+| `/`                                      | Hello World               | Exibe a mensagem “Hello World”.                                           |
 | **Admin**                                |                           |                                                                           |
-| `/admin/login`                           | Login do Admin            | Autentica o admin com e-mail e senha.                                    |
-| `/admin/create`                          | Criar Admin               | Cria um novo admin.                                                      |
-| `/admin/{id}`                            | Exibir Admin              | Retorna as informações do admin pelo id.                                 |
-| `/admin/{id}`                            | Deletar Admin             | Remove o admin com o id especificado.                                    |
+| `POST /admin/login`                      | Login do Admin            | Autentica o administrador por e-mail e senha.                             |
+| `POST /admin/create`                     | Criar Admin               | Cadastra um novo administrador.                                           |
+| `GET /admin/{id}`                        | Exibir Admin              | Retorna informações do administrador pelo ID.                             |
+| `DELETE /admin/{id}`                     | Deletar Admin             | Remove o administrador pelo ID.                                           |
 | **Patient**                              |                           |                                                                           |
-| `/patients/create`                       | Criar Paciente            | Adiciona um novo paciente.                                               |
-| `/patients/{cpf}`                        | Exibir Paciente           | Retorna as informações do paciente pelo CPF.                             |
-| `/patients/list`                         | Listar Pacientes          | Retorna todos os pacientes.                                              |
-| `/patients/update/{cpf}`                 | Atualizar Paciente        | Atualiza as informações do paciente com o CPF especificado.              |
-| `/patients/delete/{cpf}`                 | Deletar Paciente          | Remove o paciente com o CPF especificado.                                |
+| `POST /patients/create`                  | Criar Paciente            | Cadastra um novo paciente.                                                |
+| `POST /patients/login`                   | Login do Paciente         | Autentica o paciente por CPF e senha.                                     |
+| `GET /patients/{cpf}`                    | Exibir Paciente           | Retorna informações do paciente pelo CPF.                                 |
+| `GET /patients/list`                     | Listar Pacientes          | Retorna todos os pacientes.                                               |
+| `PUT /patients/update/{cpf}`             | Atualizar Paciente        | Atualiza dados do paciente pelo CPF.                                      |
+| `DELETE /patients/delete/{cpf}`          | Deletar Paciente          | Remove o paciente pelo CPF.                                               |
 | **Doctor**                               |                           |                                                                           |
-| `/doctor/create`                         | Criar Doutor              | Adiciona um novo médico.                                                 |
-| `/doctor/{crm}`                          | Atualizar Doutor          | Atualiza as informações do médico com o CRM especificado.                |
-| `/doctor/{crm}`                          | Deletar Doutor            | Remove o médico com o CRM especificado.                                  |
-| `/doctor`                                | Listar Doutores           | Retorna todos os médicos.                                                |
-| `/doctor/search?crm={crm}`               | Buscar por CRM            | Pesquisa médicos pelo CRM.                                               |
-| `/doctor/search?name={name}`             | Buscar por Nome           | Pesquisa médicos pelo nome.                                              |
-| `/doctor/search?specialty={specialty}`   | Buscar por Especialidade  | Pesquisa médicos pela especialidade.                                     |
-| `/doctor/consultations/{crm}`            | Datas de Consultas        | Lista apenas as datas das consultas do médico com o CRM informado.       |
+| `POST /doctor/create`                    | Criar Doutor              | Cadastra um novo médico.                                                  |
+| `POST /doctor/login`                     | Login do Médico           | Autentica o médico por CRM e senha.                                       |
+| `PUT /doctor/{crm}`                      | Atualizar Doutor          | Atualiza dados do médico pelo CRM.                                        |
+| `DELETE /doctor/{crm}`                   | Deletar Doutor            | Remove o médico pelo CRM.                                                 |
+| `GET /doctor`                            | Listar Doutores           | Retorna todos os médicos.                                                 |
+| `GET /doctor/search?crm={crm}`           | Buscar por CRM            | Pesquisa médicos pelo CRM.                                                |
+| `GET /doctor/search?name={name}`         | Buscar por Nome           | Pesquisa médicos pelo nome completo ou parcial.                           |
+| `GET /doctor/search?specialty={specialty}` | Buscar por Especialidade  | Pesquisa médicos pela especialidade.                                      |
+| `GET /doctor/search?email={email}`       | Buscar por E-mail         | Pesquisa médicos pelo endereço de e-mail.                                 |
+| `GET /doctor/consultations/{crm}`        | Datas de Consultas        | Lista apenas as datas das consultas agendadas para o CRM informado.       |
 | **Consultation**                         |                           |                                                                           |
-| `/consultations/create`                  | Agendar Consulta          | Cria uma nova consulta e envia e-mail automático ao paciente.            |
-| `/consultations/update`                  | Atualizar Consulta        | Atualiza uma consulta com base nos dados fornecidos.                     |
-| `/consultations/{id}`                    | Exibir Consulta           | Retorna as informações da consulta pelo id.                              |
-| `/consultations/all`                     | Listar Consultas          | Retorna todas as consultas.                                              |
-| `/consultations/{id}`                    | Cancelar Consulta         | Cancela a consulta com o id especificado.                                |
-| `/consultations/patient-history/{cpf}`   | Histórico do Paciente     | Retorna o histórico de consultas de um paciente pelo CPF.                |
+| `POST /consultations/create`             | Agendar Consulta          | Cria nova consulta e envia lembrete por e-mail ao paciente.               |
+| `PUT /consultations/update`              | Atualizar Consulta        | Atualiza consulta existente com base nos dados fornecidos.                |
+| `GET /consultations/{id}`                | Exibir Consulta           | Retorna informações da consulta pelo ID.                                  |
+| `GET /consultations/all`                 | Listar Consultas          | Retorna todas as consultas.                                               |
+| `DELETE /consultations/{id}`             | Cancelar Consulta         | Cancela a consulta pelo ID.                                               |
+| `GET /consultations/patient-history/{cpf}` | Histórico do Paciente     | Retorna histórico de consultas de um paciente pelo CPF.                   |
 | **Diagnosis**                            |                           |                                                                           |
-| `/diagnosis`                             | Criar Diagnóstico         | Cadastra um diagnóstico com descrição, data e CID vinculados à consulta. |
+| `POST /diagnosis`                        | Criar Diagnóstico         | Cadastra diagnóstico com descrição, data e CID vinculados à consulta.     |
