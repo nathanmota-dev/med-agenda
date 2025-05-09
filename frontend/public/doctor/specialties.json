@@ -1,0 +1,118 @@
+[
+    {
+        "value": "alergologia",
+        "label": "Alergologia"
+    },
+    {
+        "value": "anestesiologia",
+        "label": "Anestesiologia"
+    },
+    {
+        "value": "angiologia",
+        "label": "Angiologia"
+    },
+    {
+        "value": "cardiologia",
+        "label": "Cardiologia"
+    },
+    {
+        "value": "cirurgia_geral",
+        "label": "Cirurgia Geral"
+    },
+    {
+        "value": "cirurgia_plastica",
+        "label": "Cirurgia Plástica"
+    },
+    {
+        "value": "clinica_medica",
+        "label": "Clínica Médica"
+    },
+    {
+        "value": "dermatologia",
+        "label": "Dermatologia"
+    },
+    {
+        "value": "endocrinologia",
+        "label": "Endocrinologia"
+    },
+    {
+        "value": "gastroenterologia",
+        "label": "Gastroenterologia"
+    },
+    {
+        "value": "geriatria",
+        "label": "Geriatria"
+    },
+    {
+        "value": "ginecologia",
+        "label": "Ginecologia"
+    },
+    {
+        "value": "hematologia",
+        "label": "Hematologia"
+    },
+    {
+        "value": "hepatologia",
+        "label": "Hepatologia"
+    },
+    {
+        "value": "infectologia",
+        "label": "Infectologia"
+    },
+    {
+        "value": "mastologia",
+        "label": "Mastologia"
+    },
+    {
+        "value": "nefrologia",
+        "label": "Nefrologia"
+    },
+    {
+        "value": "neurologia",
+        "label": "Neurologia"
+    },
+    {
+        "value": "nutrologia",
+        "label": "Nutrologia"
+    },
+    {
+        "value": "oftalmologia",
+        "label": "Oftalmologia"
+    },
+    {
+        "value": "oncologia",
+        "label": "Oncologia"
+    },
+    {
+        "value": "ortopedia",
+        "label": "Ortopedia"
+    },
+    {
+        "value": "otorrinolaringologia",
+        "label": "Otorrinolaringologia"
+    },
+    {
+        "value": "pediatria",
+        "label": "Pediatria"
+    },
+    {
+        "value": "pneumologia",
+        "label": "Pneumologia"
+    },
+    {
+        "value": "psiquiatria",
+        "label": "Psiquiatria"
+    },
+    {
+        "value": "radiologia",
+        "label": "Radiologia"
+    },
+    {
+        "value": "reumatologia",
+        "label": "Reumatologia"
+    },
+    {
+        "value": "urologia",
+        "label": "Urologia"
+    }
+]
