@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../../../api/api';
 
 export default function AdminDoctors() {
@@ -11,6 +11,15 @@ export default function AdminDoctors() {
     const [doctorCrm, setDoctorCrm] = useState('');
     const [doctorData, setDoctorData] = useState<any>(null);
     const [message, setMessage] = useState('');
+
+    const [specialties, setSpecialties] = useState<{ value: string; label: string }[]>([]);
+
+    useEffect(() => {
+        fetch('/doctor/specialties.json')
+            .then((res) => res.json())
+            .then((data) => setSpecialties(data))
+            .catch((err) => console.error('Erro ao carregar especialidades:', err));
+    }, []);
 
     // Função para cadastrar um novo médico
     const handleCreateDoctor = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -103,13 +112,17 @@ export default function AdminDoctors() {
                     </div>
                     <div>
                         <label className="block text-gray-700">Especialidade</label>
-                        <input
-                            type="text"
+                        <select
                             value={specialty}
                             onChange={(e) => setSpecialty(e.target.value)}
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
                             required
-                        />
+                        >
+                            <option value="">Selecione uma especialidade</option>
+                            {specialties.map((s) => (
+                                <option key={s.value} value={s.label}>{s.label}</option>
+                            ))}
+                        </select>
                     </div>
                     <div>
                         <label className="block text-gray-700">Telefone</label>
