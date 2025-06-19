@@ -1,5 +1,4 @@
-"use client"
-
+import { useEffect, useRef } from "react"
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -25,6 +24,17 @@ export default function ChatAI() {
     ])
     const [isLoading, setIsLoading] = useState(false)
     const [streamingMessage, setStreamingMessage] = useState("")
+    const messagesEndRef = useRef<HTMLDivElement | null>(null)
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+
+    useEffect(() => {
+        if (isOpen) {
+            scrollToBottom()
+        }
+    }, [messages, streamingMessage, isOpen])
 
     const toggleChat = () => setIsOpen(!isOpen)
 
@@ -133,8 +143,8 @@ export default function ChatAI() {
 
                                             <div
                                                 className={`max-w-[70%] p-3 rounded-lg ${message.role === "user"
-                                                        ? "bg-blue-600 text-white rounded-br-none"
-                                                        : "bg-gray-100 text-gray-800 rounded-bl-none"
+                                                    ? "bg-blue-600 text-white rounded-br-none"
+                                                    : "bg-gray-100 text-gray-800 rounded-bl-none"
                                                     }`}
                                             >
                                                 <p className="text-sm whitespace-pre-wrap">{message.content}</p>
@@ -174,6 +184,7 @@ export default function ChatAI() {
                                         </div>
                                     )}
                                 </div>
+                                <div ref={messagesEndRef} />
                             </ScrollArea>
                         </CardContent>
 
