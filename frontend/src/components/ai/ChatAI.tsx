@@ -5,6 +5,7 @@ import { Input } from "../ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { MessageCircle, X, Send, Bot, User } from "lucide-react"
 import { ScrollArea } from "../ui/scroll-area"
+import api from "../../api/api"
 
 type Message = {
     id: string
@@ -53,14 +54,12 @@ export default function ChatAI() {
         setIsLoading(true)
         setStreamingMessage("")
 
-        const res = await fetch("http://localhost:11434/api/generate", {
+        const res = await fetch(`${import.meta.env.VITE_URL_API}/api/chat`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                model: "llama3.2",
-                prompt: input,
-                stream: true,
-            }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt: input })
         })
 
         const reader = res.body?.getReader()
