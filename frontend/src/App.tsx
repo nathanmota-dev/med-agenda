@@ -26,6 +26,10 @@ import PatientPayments from './pages/patient/payments';
 
 import Layout from './components/others/Layout.tsx';
 import ChatAI from './components/ai/ChatAI.tsx';
+import PdfScraping from './pages/scraping/pdf-information/index.tsx';
+import PublicLayout from './components/layout/public-layout/index.tsx';
+import NewsInformation from './pages/scraping/news-information/index.tsx';
+import DoctorInformation from './pages/scraping/doctor-information/index.tsx';
 
 
 export default function App() {
@@ -33,7 +37,12 @@ export default function App() {
     <>
       <Routes>
         {/* Landing Page */}
-        <Route path="/" element={<LandingPage />} />
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/information/pdf" element={<PdfScraping />} />
+          <Route path="/information/news" element={<NewsInformation />} />
+          <Route path="/information/doctor" element={<DoctorInformation />} />
+        </Route>
 
         {/* Login */}
         <Route path="/:userType/login" element={<Login />} />
