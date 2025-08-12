@@ -5,7 +5,6 @@ import { Input } from "../ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { MessageCircle, X, Send, Bot, User } from "lucide-react"
 import { ScrollArea } from "../ui/scroll-area"
-import api from "../../api/api"
 
 type Message = {
     id: string
