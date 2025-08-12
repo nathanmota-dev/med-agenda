@@ -11,8 +11,7 @@ import {
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-white">            
-            
+        <div className="min-h-screen bg-white">
             <div className="relative h-[23rem] w-full">
                 <img
                     src="/hero.jpg"
@@ -30,7 +29,7 @@ export default function LandingPage() {
                     </div>
                 </div>
             </div>
-            
+
             <div className="container mx-auto px-4 pt-16">
                 <div className="mb-12 text-center">
                     <h2 className="mb-4 text-3xl font-semibold text-blue-600 md:text-4xl">
@@ -41,7 +40,7 @@ export default function LandingPage() {
                     </p>
                 </div>
 
-                <div className="grid gap-8 md:grid-cols-3">                    
+                <div className="grid gap-8 md:grid-cols-3">
                     <Card className="flex flex-col transition-all hover:border-blue-600 hover:shadow-md">
                         <CardHeader className="text-center">
                             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
@@ -63,7 +62,7 @@ export default function LandingPage() {
                             </a>
                         </CardFooter>
                     </Card>
-                    
+
                     <Card className="flex flex-col transition-all hover:border-blue-600 hover:shadow-md">
                         <CardHeader className="text-center">
                             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
@@ -85,7 +84,7 @@ export default function LandingPage() {
                             </a>
                         </CardFooter>
                     </Card>
-                    
+
                     <Card className="flex flex-col transition-all hover:border-blue-600 hover:shadow-md">
                         <CardHeader className="text-center">
                             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
