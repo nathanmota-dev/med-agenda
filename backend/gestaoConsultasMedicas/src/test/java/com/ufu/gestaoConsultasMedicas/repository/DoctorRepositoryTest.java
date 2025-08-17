@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,8 +32,8 @@ class DoctorRepositoryTest {
     @Test
     @DisplayName("findByEmail deve retornar médico quando email existir")
     void findByEmail_whenExists() {
-        Doctor doc = new Doctor("123456789", "house@hospital.com", "pwd", "Dr. House", "Clinico", "34999990000");
-        em.persistAndFlush(doc);
+        Doctor doctor = new Doctor("123456789", "house@hospital.com", "senha123", "Dr. House", "Cardiologia", "3499999999", BigDecimal.valueOf(200.0));
+        em.persistAndFlush(doctor);
 
         Optional<Doctor> found = doctorRepository.findByEmail("house@hospital.com");
 
@@ -54,7 +55,7 @@ class DoctorRepositoryTest {
                 "Paciente Teste", LocalDate.of(1990,1,1), "Rua 1", "Histórico ok");
         em.persist(patient);
 
-        Doctor doc = new Doctor("222333444", "who@hospital.com", "pwd", "Dr. Who", "Cardio", "34988887777");
+        Doctor doc = new Doctor("222333444", "who@hospital.com", "pwd", "Dr. Who", "Cardio", "34988887777", BigDecimal.valueOf(200.0));
         em.persist(doc);
 
         LocalDateTime d1 = LocalDateTime.now().plusDays(1).withHour(9).withMinute(0).withSecond(0).withNano(0);
@@ -83,10 +84,10 @@ class DoctorRepositoryTest {
     @Test
     @DisplayName("Deve falhar ao salvar dois médicos com o mesmo email (unicidade)")
     void uniqueEmail_constraint() {
-        Doctor d1 = new Doctor("000111222", "unique@hospital.com", "pwd", "Dr. A", "Orto", "34911110000");
+        Doctor d1 = new Doctor("000111222", "unique@hospital.com", "pwd", "Dr. A", "Orto", "34911110000", BigDecimal.valueOf(200.0));
         doctorRepository.saveAndFlush(d1);
 
-        Doctor d2 = new Doctor("000111223", "unique@hospital.com", "pwd", "Dr. B", "Orto", "34911110001");
+        Doctor d2 = new Doctor("000111223", "unique@hospital.com", "pwd", "Dr. B", "Orto", "34911110001", BigDecimal.valueOf(200.0));
 
         assertThatThrownBy(() -> {
             doctorRepository.save(d2);

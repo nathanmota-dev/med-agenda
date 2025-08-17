@@ -1,11 +1,10 @@
 package com.ufu.gestaoConsultasMedicas.service;
 
-import com.ufu.gestaoConsultasMedicas.models.Consultation;
-import com.ufu.gestaoConsultasMedicas.models.Patient;
-import com.ufu.gestaoConsultasMedicas.models.Doctor;
+import com.ufu.gestaoConsultasMedicas.models.*;
 import com.ufu.gestaoConsultasMedicas.repository.ConsultationRepository;
 import com.ufu.gestaoConsultasMedicas.repository.DoctorRepository;
 import com.ufu.gestaoConsultasMedicas.repository.PatientRepository;
+import com.ufu.gestaoConsultasMedicas.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,16 +20,19 @@ public class ConsultationService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
     private final EmailService emailService;
+    private final PaymentRepository paymentRepository;
 
     @Autowired
     public ConsultationService(ConsultationRepository consultationRepository,
                                DoctorRepository doctorRepository,
                                PatientRepository patientRepository,
-                               EmailService emailService) {
+                               EmailService emailService,
+                               PaymentRepository paymentRepository) {
         this.consultationRepository = consultationRepository;
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
         this.emailService = emailService;
+        this.paymentRepository = paymentRepository;
     }
 
     public Consultation createConsultation(Patient patient, Doctor doctor, LocalDateTime dateTime, boolean isUrgent, String observation) {
@@ -50,6 +52,15 @@ public class ConsultationService {
         consultation.setUrgent(isUrgent);
         consultation.setObservation(observation);
 
+        consultation = consultationRepository.save(consultation);
+
+        // Criação do pagamento vinculado
+        Payment payment = new Payment();
+        payment.setConsultation(consultation);
+        payment.setAmount(doctorFromDb.getConsultationValue());
+        payment.setStatus(PaymentStatus.PENDING); // valor inicial
+        paymentRepository.save(payment);
+
         // Envio de e-mail
         emailService.sendEmail(
                 "delivered@resend.dev",
@@ -57,7 +68,7 @@ public class ConsultationService {
                 "Sua consulta foi marcada para " + consultation.getDateTime()
         );
 
-        return consultationRepository.save(consultation);
+        return consultation;
     }
 
     public Optional<Consultation> updateConsultation(UUID consultationId, LocalDateTime dateTime, String observation) {

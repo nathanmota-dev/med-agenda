@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,7 +35,8 @@ class ConsultationRepositoryTest {
                 "pwd",
                 "Dr. Test "+crm,
                 "Cardio",
-                "3499999999"
+                "3499999999",
+                BigDecimal.valueOf(200.0)
         );
         return em.persistAndFlush(d);
     }

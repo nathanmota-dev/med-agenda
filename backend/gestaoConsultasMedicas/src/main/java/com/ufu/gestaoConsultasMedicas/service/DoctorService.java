@@ -48,6 +48,7 @@ public class DoctorService {
             doctor.setName(updatedDoctor.getName());
             doctor.setSpecialty(updatedDoctor.getSpecialty());
             doctor.setTelephone(updatedDoctor.getTelephone());
+            doctor.setConsultationValue(updatedDoctor.getConsultationValue());
             return doctorRepository.save(doctor);
         });
     }

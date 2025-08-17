@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "doctor")
 public class Doctor {
@@ -28,16 +30,20 @@ public class Doctor {
     @Column(name = "telephone", nullable = false)
     private String telephone;
 
+    @Column(name = "valor_consulta", nullable = false)
+    private BigDecimal consultationValue;
+
     public Doctor(){
     }
 
-    public Doctor(String crm, String email, String password, String name, String specialty, String telephone) {
+    public Doctor(String crm, String email, String password, String name, String specialty, String telephone, BigDecimal consultationValue) {
         this.crm = crm;
         this.email = email;
         this.password = password;
         this.name = name;
         this.specialty = specialty;
         this.telephone = telephone;
+        this.consultationValue = consultationValue;
     }
 
     public String getCrm() {
@@ -86,5 +92,13 @@ public class Doctor {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public BigDecimal getConsultationValue() {
+        return consultationValue;
+    }
+
+    public void setConsultationValue(BigDecimal consultationValue) {
+        this.consultationValue = consultationValue;
     }
 }
