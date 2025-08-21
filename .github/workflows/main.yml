@@ -1,0 +1,46 @@
+name: CI-CD Backend Med Agenda
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "backend/gestaoConsultasMedicas/**"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: sa-east-1
+  ECR_REPO: med-agenda-backend
+  IMAGE_TAG: latest
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configura credenciais AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}          
+          role-session-name: med-agenda-build
+
+      - name: Login no ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build da imagem
+        run: |
+          cd backend/gestaoConsultasMedicas
+          docker build -t $ECR_REPO:$IMAGE_TAG .
+
+      - name: Push para ECR
+        run: |
+          ECR_URI=${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}
+          docker tag $ECR_REPO:$IMAGE_TAG $ECR_URI:$IMAGE_TAG
+          docker push $ECR_URI:$IMAGE_TAG
