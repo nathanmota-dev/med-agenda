@@ -1,11 +1,36 @@
 # Etapa de build
-FROM maven:3.8.8-amazoncorretto-21 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package -X -DskipTests
+FROM maven:3.9.9-amazoncorretto-21 AS build
+WORKDIR /workspace
 
-# Etapa final
-FROM openjdk:21-slim
+# Cache de dependências
+COPY pom.xml .
+RUN mvn -B -q -DskipTests dependency:go-offline
+
+# Código fonte
+COPY src ./src
+
+# Build do JAR
+RUN mvn -B -q -DskipTests clean package
+
+
+# Etapa final (runtime)
+FROM amazoncorretto:21-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar /app/finalpoo2.jar
-ENTRYPOINT ["java", "-jar", "/app/finalpoo2.jar"]
+
+# Usuário não-root
+RUN addgroup -S app && adduser -S app -G app
+
+# Copia o JAR gerado
+COPY --from=build /workspace/target/*.jar /app/app.jar
+
+USER app
+
+# Porta padrão
+EXPOSE 8080
+
+# JAVA_OPTS pode ser injetado por ENV
+ENV SERVER_PORT=8080 \
+    JAVA_OPTS=""
+
+# O Spring lerá as variáveis de ambiente injetadas no run
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]
