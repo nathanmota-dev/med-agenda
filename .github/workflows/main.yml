@@ -10,11 +10,6 @@ on:
 permissions:
   contents: read
 
-env:
-  AWS_REGION: us-east-1
-  ECR_REPO: med-agenda-backend
-  IMAGE_TAG: latest
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -28,7 +23,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: us-east-1
 
       - name: Login no ECR
         id: ecr
@@ -36,11 +31,10 @@ jobs:
 
       - name: Build da imagem
         working-directory: backend/gestaoConsultasMedicas
-        run: |
-          docker build -t $ECR_REPO:$IMAGE_TAG .
+        run: docker build -t med-agenda-backend:latest .
 
-      - name: Push para ECR
+      - name: Push para o ECR
         run: |
           REGISTRY="${{ steps.ecr.outputs.registry }}"
-          docker tag $ECR_REPO:$IMAGE_TAG $REGISTRY/$ECR_REPO:$IMAGE_TAG
-          docker push $REGISTRY/$ECR_REPO:$IMAGE_TAG
+          docker tag med-agenda-backend:latest $REGISTRY/med-agenda-backend:latest
+          docker push $REGISTRY/med-agenda-backend:latest
