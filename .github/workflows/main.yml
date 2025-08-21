@@ -2,69 +2,45 @@ name: CI-CD Backend Med Agenda
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
     paths:
       - "backend/gestaoConsultasMedicas/**"
   workflow_dispatch:
 
 permissions:
+  id-token: write
   contents: read
 
+env:
+  AWS_REGION: sa-east-1
+  ECR_REPO: med-agenda-backend
+  IMAGE_TAG: latest
+
 jobs:
-  build-push-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    env:
-      ECR_REPO: med-agenda-backend
-      IMAGE_TAG: latest
-      SERVICE_ARN: arn:aws:apprunner:us-east-1:714592193050:service/med-agenda-backend/486e4a207c874ad88ac7d094acdc09c7
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurar credenciais AWS
+      - name: Configura credenciais AWS (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_REGION }}          
+          role-session-name: med-agenda-build
 
       - name: Login no ECR
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: (Idempotente) Criar repositório no ECR se não existir
+      - name: Build da imagem
         run: |
-          aws ecr describe-repositories --repository-names "$ECR_REPO" --region us-east-1 >/dev/null 2>&1 \
-          || aws ecr create-repository --repository-name "$ECR_REPO" --region us-east-1 >/dev/null
-
-      - name: Build da imagem (monorepo)
-        working-directory: backend/gestaoConsultasMedicas
-        run: |
+          cd backend/gestaoConsultasMedicas
           docker build -t $ECR_REPO:$IMAGE_TAG .
 
-      - name: Push para o ECR
+      - name: Push para ECR
         run: |
-          REGISTRY="${{ steps.ecr.outputs.registry }}"
-          echo "Usando registry: $REGISTRY"
-          docker tag $ECR_REPO:$IMAGE_TAG $REGISTRY/$ECR_REPO:$IMAGE_TAG
-          docker push $REGISTRY/$ECR_REPO:$IMAGE_TAG
-
-      - name: Conferir que a tag 'latest' existe no ECR (poll até 60s)
-        run: |
-          set -e
-          REGISTRY="${{ steps.ecr.outputs.registry }}"
-          for i in {1..12}; do
-            echo "Verificando tag no ECR... tentativa $i"
-            TAGS=$(aws ecr describe-images --repository-name "$ECR_REPO" --region us-east-1 \
-                     --query 'imageDetails[].imageTags' --output json | tr -d '\n')
-            echo "Tags atuais: $TAGS"
-            echo "$TAGS" | grep -q '"latest"' && echo "Tag 'latest' encontrada." && exit 0
-            sleep 5
-          done
-          echo "ERRO: tag 'latest' não apareceu no ECR em 60s."
-          exit 1
-
-      - name: Start deployment no App Runner
-        run: |
-          aws apprunner start-deployment --service-arn "$SERVICE_ARN"
+          ECR_URI=${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}
+          docker tag $ECR_REPO:$IMAGE_TAG $ECR_URI:$IMAGE_TAG
+          docker push $ECR_URI:$IMAGE_TAG
