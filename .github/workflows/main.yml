@@ -2,7 +2,7 @@ name: CI-CD Backend Med Agenda
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
     paths:
       - "backend/gestaoConsultasMedicas/**"
   workflow_dispatch:
@@ -11,8 +11,12 @@ permissions:
   contents: read
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
+    env:
+      ECR_REPO: med-agenda-backend
+      IMAGE_TAG: latest
+      SERVICE_ARN: arn:aws:apprunner:us-east-1:714592193050:service/med-agenda-backend/486e4a207c874ad88ac7d094acdc09c7
 
     steps:
       - name: Checkout
@@ -29,12 +33,38 @@ jobs:
         id: ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build da imagem
+      - name: (Idempotente) Criar repositório no ECR se não existir
+        run: |
+          aws ecr describe-repositories --repository-names "$ECR_REPO" --region us-east-1 >/dev/null 2>&1 \
+          || aws ecr create-repository --repository-name "$ECR_REPO" --region us-east-1 >/dev/null
+
+      - name: Build da imagem (monorepo)
         working-directory: backend/gestaoConsultasMedicas
-        run: docker build -t med-agenda-backend:latest .
+        run: |
+          docker build -t $ECR_REPO:$IMAGE_TAG .
 
       - name: Push para o ECR
         run: |
           REGISTRY="${{ steps.ecr.outputs.registry }}"
-          docker tag med-agenda-backend:latest $REGISTRY/med-agenda-backend:latest
-          docker push $REGISTRY/med-agenda-backend:latest
+          echo "Usando registry: $REGISTRY"
+          docker tag $ECR_REPO:$IMAGE_TAG $REGISTRY/$ECR_REPO:$IMAGE_TAG
+          docker push $REGISTRY/$ECR_REPO:$IMAGE_TAG
+
+      - name: Conferir que a tag 'latest' existe no ECR (poll até 60s)
+        run: |
+          set -e
+          REGISTRY="${{ steps.ecr.outputs.registry }}"
+          for i in {1..12}; do
+            echo "Verificando tag no ECR... tentativa $i"
+            TAGS=$(aws ecr describe-images --repository-name "$ECR_REPO" --region us-east-1 \
+                     --query 'imageDetails[].imageTags' --output json | tr -d '\n')
+            echo "Tags atuais: $TAGS"
+            echo "$TAGS" | grep -q '"latest"' && echo "Tag 'latest' encontrada." && exit 0
+            sleep 5
+          done
+          echo "ERRO: tag 'latest' não apareceu no ECR em 60s."
+          exit 1
+
+      - name: Start deployment no App Runner
+        run: |
+          aws apprunner start-deployment --service-arn "$SERVICE_ARN"
