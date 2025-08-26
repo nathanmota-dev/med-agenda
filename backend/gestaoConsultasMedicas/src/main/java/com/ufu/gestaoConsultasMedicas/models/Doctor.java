@@ -30,7 +30,7 @@ public class Doctor {
     @Column(name = "telephone", nullable = false)
     private String telephone;
 
-    @Column(name = "valor_consulta", nullable = false)
+    @Column(name = "consultationValue", nullable = false)
     private BigDecimal consultationValue;
 
     public Doctor(){
