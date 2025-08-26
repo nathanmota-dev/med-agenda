@@ -8,6 +8,8 @@ export default function AdminDoctors() {
     const [password, setPassword] = useState('');
     const [specialty, setSpecialty] = useState('');
     const [telephone, setTelephone] = useState('');
+    const [consultationValue, setConsultationValue] = useState('');
+
     const [doctorCrm, setDoctorCrm] = useState('');
     const [doctorData, setDoctorData] = useState<any>(null);
     const [message, setMessage] = useState('');
@@ -33,7 +35,8 @@ export default function AdminDoctors() {
                 email,
                 password,
                 specialty,
-                telephone
+                telephone,
+                consultationValue
             });
             setMessage('Médico cadastrado com sucesso!');
             setName('');
@@ -42,6 +45,7 @@ export default function AdminDoctors() {
             setPassword('');
             setSpecialty('');
             setTelephone('');
+            setConsultationValue('');
         } catch (error) {
             setMessage('Erro ao cadastrar médico. Tente novamente.');
             console.error(error);
@@ -134,6 +138,18 @@ export default function AdminDoctors() {
                             required
                         />
                     </div>
+                    <div>
+                        <label className="block text-gray-700">Valor da Consulta (R$)</label>
+                        <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value={consultationValue}
+                            onChange={(e) => setConsultationValue(e.target.value)}
+                            className="mt-1 p-2 border border-gray-300 rounded w-full"
+                            required
+                        />
+                    </div>
                     <button
                         type="submit"
                         className="w-full bg-blue-600 text-white p-2 rounded mt-4 hover:bg-blue-700"
@@ -170,6 +186,7 @@ export default function AdminDoctors() {
                         <p><strong>Email:</strong> {doctorData[0].email}</p>
                         <p><strong>Especialidade:</strong> {doctorData[0].specialty}</p>
                         <p><strong>Telefone:</strong> {doctorData[0].telephone}</p>
+                        <p><strong>Valor da Consulta:</strong> R$ {doctorData[0].consultationValue}</p>
                     </div>
                 )}
             </div>
