@@ -9,6 +9,9 @@ RUN mvn -B -q -DskipTests dependency:go-offline
 # Código fonte
 COPY src ./src
 
+# Copia a pasta pdf para resources
+COPY pdf ./src/main/resources/pdf
+
 # Build do JAR
 RUN mvn -B -q -DskipTests clean package
 
