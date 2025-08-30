@@ -7,6 +7,9 @@ export default function AdminPatients() {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [address, setAddress] = useState('');
     const [medicalHistory, setMedicalHistory] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
     const [patientCpf, setPatientCpf] = useState('');
     const [patientData, setPatientData] = useState<any>(null);
     const [message, setMessage] = useState('');
@@ -22,7 +25,9 @@ export default function AdminPatients() {
                 cpf,
                 dateOfBirth,
                 address,
-                medicalHistory
+                medicalHistory,
+                email,
+                password
             });
             setMessage('Paciente cadastrado com sucesso!');
             setName('');
@@ -30,6 +35,8 @@ export default function AdminPatients() {
             setDateOfBirth('');
             setAddress('');
             setMedicalHistory('');
+            setEmail('');
+            setPassword('');
         } catch (error) {
             setMessage('Erro ao cadastrar paciente. Tente novamente.');
             console.error(error);
@@ -53,7 +60,7 @@ export default function AdminPatients() {
     return (
         <div className="p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-bold mb-4">Gerenciamento de Pacientes</h2>
-            
+
             {/* Cadastro de Paciente */}
             <div className="mb-8">
                 <h3 className="text-xl font-semibold mb-4">Cadastrar Novo Paciente</h3>
@@ -105,6 +112,26 @@ export default function AdminPatients() {
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
                         ></textarea>
                     </div>
+                    <div>
+                        <label className="block text-gray-700">E-mail</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="mt-1 p-2 border border-gray-300 rounded w-full"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Senha</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="mt-1 p-2 border border-gray-300 rounded w-full"
+                            required
+                        />
+                    </div>
                     <button
                         type="submit"
                         className="w-full bg-blue-600 text-white p-2 rounded mt-4 hover:bg-blue-700"
@@ -138,6 +165,7 @@ export default function AdminPatients() {
                         <h4 className="font-semibold">Dados do Paciente:</h4>
                         <p><strong>CPF:</strong> {patientData.cpf}</p>
                         <p><strong>Nome:</strong> {patientData.name}</p>
+                        <p><strong>Email:</strong> {patientData.email}</p>
                         <p><strong>Data de Nascimento:</strong> {patientData.dateOfBirth}</p>
                         <p><strong>Endereço:</strong> {patientData.address}</p>
                         <p><strong>Histórico Médico:</strong> {patientData.medicalHistory}</p>
