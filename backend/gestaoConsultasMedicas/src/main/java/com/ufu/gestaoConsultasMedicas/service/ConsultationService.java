@@ -2,6 +2,7 @@ package com.ufu.gestaoConsultasMedicas.service;
 
 import com.ufu.gestaoConsultasMedicas.models.*;
 import com.ufu.gestaoConsultasMedicas.repository.ConsultationRepository;
+import com.ufu.gestaoConsultasMedicas.repository.DiagnosisRepository;
 import com.ufu.gestaoConsultasMedicas.repository.DoctorRepository;
 import com.ufu.gestaoConsultasMedicas.repository.PatientRepository;
 import com.ufu.gestaoConsultasMedicas.repository.PaymentRepository;
@@ -21,18 +22,21 @@ public class ConsultationService {
     private final PatientRepository patientRepository;
     private final EmailService emailService;
     private final PaymentRepository paymentRepository;
+    private final DiagnosisRepository diagnosisRepository;
 
     @Autowired
     public ConsultationService(ConsultationRepository consultationRepository,
                                DoctorRepository doctorRepository,
                                PatientRepository patientRepository,
                                EmailService emailService,
-                               PaymentRepository paymentRepository) {
+                               PaymentRepository paymentRepository,
+                               DiagnosisRepository diagnosisRepository) {
         this.consultationRepository = consultationRepository;
         this.doctorRepository = doctorRepository;
         this.patientRepository = patientRepository;
         this.emailService = emailService;
         this.paymentRepository = paymentRepository;
+        this.diagnosisRepository = diagnosisRepository;
     }
 
     public Consultation createConsultation(Patient patient, Doctor doctor, LocalDateTime dateTime, boolean isUrgent, String observation) {
@@ -81,6 +85,16 @@ public class ConsultationService {
 
     public boolean cancelConsultation(UUID consultationId) {
         if (consultationRepository.existsById(consultationId)) {
+            Optional<Diagnosis> diagnosis = diagnosisRepository.findByConsulta_ConsultationId(consultationId);
+            if (diagnosis.isPresent()) {
+                diagnosisRepository.delete(diagnosis.get());
+            }
+            
+            Optional<Payment> payment = paymentRepository.findByConsultation_ConsultationId(consultationId);
+            if (payment.isPresent()) {
+                paymentRepository.delete(payment.get());
+            }
+            
             consultationRepository.deleteById(consultationId);
             return true;
         }
