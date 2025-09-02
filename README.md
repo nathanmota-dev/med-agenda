@@ -8,8 +8,6 @@ Med Agenda é um sistema para gerenciamento de consultório médico, contempland
 O back-end foi implementado em Spring Boot com PostgreSQL, seguindo 5 padrões de projeto e 3 princípios de design.  
 O front-end foi desenvolvido em React.
 
-A documentação completa está disponível na [Wiki do projeto](https://github.com/nathanmota-dev/final-project-poo2/wiki).
-
 ## Tecnologias
 
 - **Back-end**: Java + Spring Boot  
