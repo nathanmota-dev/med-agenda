@@ -21,7 +21,7 @@ export default function AdminForm() {
 
         try {
             await api.post('/admin/create', { name, email, password });
-            navigate('/login/admin');
+            navigate('/admin/login');
         } catch (err) {
             setError('Erro ao registrar. Verifique os dados e tente novamente.');
         }

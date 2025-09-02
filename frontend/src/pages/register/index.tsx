@@ -8,7 +8,9 @@ export default function Register() {
     const [userType, setUserType] = useState<'admin' | 'patient'>('admin');
 
     useEffect(() => {
-        const path = location.pathname.split('/')[2];
+        const path = location.pathname.split('/')[1];
+        console.log('Caminho atual:', location.pathname);
+        console.log('UserType detectado:', path);
         if (path === 'patient' || path === 'admin') {
             setUserType(path);
         }

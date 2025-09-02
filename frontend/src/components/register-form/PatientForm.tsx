@@ -19,22 +19,35 @@ export default function PatientForm() {
         setShowPassword(!showPassword);
     };
 
+    const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, ''); // Permite apenas números
+        setCpf(value);
+    };
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError(null);
 
+        // Validação básica apenas para CPF (deve ser apenas números)
+        const cleanCpf = cpf.replace(/\D/g, ''); // Remove tudo que não é número
+        if (!cleanCpf) {
+            setError('CPF deve conter apenas números.');
+            return;
+        }
+
         try {
             await api.post('/patients/create', {
                 name,
-                cpf,
-                email,
-                password,
+                cpf: cleanCpf, // Enviar apenas números
                 dateOfBirth,
                 address,
                 medicalHistory,
+                email,
+                password
             });
-            navigate('/login/patient');
-        } catch (err) {
+            navigate('/patient/login');
+        } catch (err: any) {
+            console.error('Erro ao cadastrar paciente:', err.response?.data || err.message);
             setError('Erro ao registrar. Verifique os dados e tente novamente.');
         }
     };
@@ -68,8 +81,8 @@ export default function PatientForm() {
                         type="text"
                         required
                         value={cpf}
-                        onChange={(e) => setCpf(e.target.value)}
-                        placeholder="Apenas números"
+                        onChange={handleCpfChange}
+                        placeholder="Digite apenas números"
                         className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                     />
                 </div>
@@ -99,7 +112,6 @@ export default function PatientForm() {
                     </div>
                     <input
                         type="text"
-                        required
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         placeholder="Rua, número, bairro..."

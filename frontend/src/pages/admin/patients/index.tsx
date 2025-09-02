@@ -14,21 +14,37 @@ export default function AdminPatients() {
     const [patientData, setPatientData] = useState<any>(null);
     const [message, setMessage] = useState('');
 
+    const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, ''); // Permite apenas números
+        setCpf(value);
+    };
+
     // Função para cadastrar um novo paciente
     const handleCreatePatient = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setMessage('');
 
+        console.log('AdminPatients - Dados sendo enviados:', {
+            name,
+            cpf: cpf.replace(/\D/g, ''), // Limpar CPF antes de enviar
+            dateOfBirth,
+            address,
+            medicalHistory,
+            email,
+            password
+        });
+
         try {
-            await api.post('/patients/create', {
+            const response = await api.post('/patients/create', {
                 name,
-                cpf,
+                cpf: cpf.replace(/\D/g, ''), // Enviar apenas números
                 dateOfBirth,
                 address,
                 medicalHistory,
                 email,
                 password
             });
+            console.log('AdminPatients - Resposta do servidor:', response.data);
             setMessage('Paciente cadastrado com sucesso!');
             setName('');
             setCpf('');
@@ -38,8 +54,8 @@ export default function AdminPatients() {
             setEmail('');
             setPassword('');
         } catch (error) {
+            console.error('AdminPatients - Erro:', error);
             setMessage('Erro ao cadastrar paciente. Tente novamente.');
-            console.error(error);
         }
     };
 
@@ -80,8 +96,9 @@ export default function AdminPatients() {
                         <input
                             type="text"
                             value={cpf}
-                            onChange={(e) => setCpf(e.target.value)}
+                            onChange={handleCpfChange}
                             className="mt-1 p-2 border border-gray-300 rounded w-full"
+                            placeholder="Digite apenas números"
                             required
                         />
                     </div>
